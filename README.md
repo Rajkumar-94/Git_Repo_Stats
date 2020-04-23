@@ -1,3 +1,4 @@
-# A python code to colect Git stats like Clone, visitors, starts, forks from a repo and store it in csv file. If using aws, there is a lamda function code where it stores the csv file in amazon S3 and appends the same csv file.
+# A python code to colect Git stats.
 
-Here the code uses PyGitHub library which is used to fetch the repo stats.
+This code is which uses PyGitHub library which is used to fetch the Git repo stats such as clone, visitors, starts, forks and store it in csv file.
+A seperate code is written to for aws lambda function where the collected Git repo stats can directly stored in AWS S3 bucket.
