@@ -44,7 +44,14 @@ def lambda_handler(event,context):
 def store_github_stats(username,token):
     user = token.get_user(username)
     repo_name = conf.repo_name
-    date = datetime.date.today()
+
+    # Converting GMT date time to IST date time
+    date = datetime.datetime.today()
+    zone = pytz.timezone('Asia/Kolkata')
+    date_ist = date.astimezone(zone)
+    today_date = date_ist.strftime("%Y-%m-%d")
+    date_time = date_ist.strftime("%Y-%m-%d %H:%M:%S")
+
     for repo in user.get_repos():
         if repo_name in repo.name:
 
@@ -52,7 +59,7 @@ def store_github_stats(username,token):
             clone_value = repo.get_clones_traffic()
             clones = clone_value['clones']
             for clone in clones:
-                if str(date) in str(clone.timestamp):
+                if today_date in str(clone.timestamp):
                     clone_count = clone.count
                     unique_clone_count = clone.uniques
                     break
@@ -64,7 +71,7 @@ def store_github_stats(username,token):
             visitors_value = repo.get_views_traffic()
             views = visitors_value['views']
             for view in views:
-                if str(date) in str(view.timestamp):
+                if today_date in str(view.timestamp):
                     view_count = view.count
                     unique_visitors = view.uniques
                     break
@@ -81,4 +88,4 @@ def store_github_stats(username,token):
         write = csv.writer(f,delimiter=',')
         if f.tell() == 0:
             write.writerow(['Date','Today\'s Clone', 'Today\'s Unique Clone', 'Today\'s Vistors', 'Today\'s Unique Visitors', 'Starts', 'Forks', 'Last 14 days Clone', 'Last 14 days Unique Clone', 'Last 14 days Views','Last 14 days unique Views'])
-        write.writerow([datetime.datetime.today(), clone_count, unique_clone_count, view_count, unique_visitors,stars,forks,clone_value['count'],clone_value['uniques'],visitors_value['count'],visitors_value['uniques']])
+        write.writerow([date_time, clone_count, unique_clone_count, view_count, unique_visitors,stars,forks,clone_value['count'],clone_value['uniques'],visitors_value['count'],visitors_value['uniques']])
