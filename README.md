@@ -1,4 +1,4 @@
-# A python code to collect Git Statistics.
+# A python code to collect GitHub repository statistics.
 
 You can use this code to collect everyday Git stats for a GitHub repository. Since the Git traffic stats will be available for the last 14 days, you can use this to keep tack for every day's git stat details.
 This code uses PyGitHub library which is used to fetch the Git repo stats such as clone, visitors, starts, forks, and store it in CSV file.
