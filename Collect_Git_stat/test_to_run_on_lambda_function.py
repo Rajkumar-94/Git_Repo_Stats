@@ -1,15 +1,15 @@
 """
-This is a sample script which connects to GitHub account using token and collect today's stats such as Clone, Unique Clone, Visitors, Unique Vistors, number of Starts and Forks into a csv file and store/append the csv file on the AWS bucket.
+This is a sample script which connects to to GitHub account via PyGithub library using token and collect repository details into a csv file and store/append the csv file on the AWS bucket.
 """
 from github import Github
 import csv
 import datetime
 import boto3
 import conf
+import pytz
 
 #----START OF SCRIPT in Lambda function---
 def lambda_handler(event,context):
-
     s3 = boto3.client('s3')
 
     # Collecting paths and bucket name from conf file
@@ -85,5 +85,5 @@ def store_github_stats(username,token):
     with open("mycsv.csv", 'a+', newline='') as f:
         write = csv.writer(f,delimiter=',')
         if f.tell() == 0:
-            write.writerow(['Date','Today\'s Clone', 'Today\'s Unique Clone', 'Today\'s Vistors', 'Today\'s Unique Visitors', 'Starts', 'Forks', 'Last 14 days Clone', 'Last 14 days Unique Clone', 'Last 14 days Views','Last 14 days unique Views'])
-        write.writerow([date_time, clone_count, unique_clone_count, view_count, unique_visitors,stars,forks,clone_value['count'],clone_value['uniques'],visitors_value['count'],visitors_value['uniques']])
+            write.writerow(['Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
+        write.writerow([datetime.datetime.today(), stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
