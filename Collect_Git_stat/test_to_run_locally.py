@@ -1,5 +1,5 @@
 """
-This is a sample script which connects to GitHub account using token and collect today's stats such as Clone, Unique Clone, Visitors, Unique Vistors, number of Starts and Forks for specified Repository
+This is a sample script which connects to GitHub account via PyGithub library using token and get details about repository.
 """
 from github import Github
 import csv
@@ -41,15 +41,25 @@ def store_github_stats(username,token):
             stars = repo.stargazers_count
             forks = repo.forks
             
-    #Writing the latest Github Stats to the csv file which is in the lambda temp folder.
+    #Writing the latest Github Stats to the csv file.
     with open("mycsv.csv", 'a+', newline='') as f:
         write = csv.writer(f,delimiter=',')
         if f.tell() == 0:
-            write.writerow(['Date','Today\'s Clone', 'Today\'s Unique Clone', 'Today\'s Vistors', 'Today\'s Unique Visitors', 'Starts', 'Forks', 'Last 14 days Clone', 'Last 14 days Unique Clone', 'Last 14 days Views','Last 14 days unique Views'])
-        write.writerow([datetime.datetime.today(), clone_count, unique_clone_count, view_count, unique_visitors,stars,forks,clone_value['count'],clone_value['uniques'],visitors_value['count'],visitors_value['uniques']])
+            write.writerow(['Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
+        write.writerow([datetime.datetime.today(), stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
+
+    print('{} has {} stars'.format(repo_name,stars))
+    print('{} has {} forks'.format(repo_name,forks))
+    print('{} has {} clones for the day'.format(repo_name,clone_count))
+    print('{} has {} unique clones for the day'.format(repo_name,unique_clone_count))
+    print('{} has {} views for the day'.format(repo_name,view_count))
+    print('{} has {} unique visitors for the day'.format(repo_name,unique_visitors))
+    print('{} has {} clones for last 14 days'.format(repo_name,clone_value['count']))
+    print('{} has {} unique clones for last 14 days'.format(repo_name,clone_value['uniques']))
+    print('{} has {} views for last 14 days'.format(repo_name,visitors_value['count']))
+    print('{} has {} unique visitors for last 14 days'.format(repo_name,visitors_value['uniques']))
 
 #----START OF SCRIPT---
-
 if __name__ == "__main__":
     github_user = conf.github_username
     token = Github(conf.token)
