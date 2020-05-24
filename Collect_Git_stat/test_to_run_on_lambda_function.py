@@ -26,11 +26,11 @@ def lambda_handler(event,context):
         csv.writer(open(lambda_temp_file, "w+"))
         
     # Assigning GitHub acount username and token
-    github_user = conf.github_username
-    token = Github(conf.token)
+    github_obj = Github(conf.token)
+    repositories = conf.repositories
     
     # Calling GitHub function to get the Dunzo Repository stats.
-    store_github_stats(github_user,token)
+    store_github_stats(github_obj,repositories)
 
     # upload the lambda temp file to s3 bucket
     s3.upload_file(lambda_temp_file, my_s3_bucket, s3_csv_file)
@@ -39,25 +39,38 @@ def lambda_handler(event,context):
         'message': 'success!!'
     }
 
-def store_github_stats(username,token):
-    user = token.get_user(username)
-    repo_name = conf.repo_name
-
+def store_github_stats(github_obj,repositories):
+    
     # Converting GMT date time to IST date time
     date = datetime.datetime.today()
     zone = pytz.timezone('Asia/Kolkata')
     date_ist = date.astimezone(zone)
     today_date = date_ist.strftime("%Y-%m-%d")
     date_time = date_ist.strftime("%Y-%m-%d %H:%M:%S")
+    
+    #Opening csv file to write the collected Github Stats.
+    with open(lambda_temp_file, 'a+', newline='') as f:
+        write = csv.writer(f,delimiter=',')
 
-    for repo in user.get_repos():
-        if repo_name in repo.name:
+        #If header row is not available, write the header row.
+        if f.tell() == 0:
+            write.writerow(['Repository','Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
+        
+        #Loop for the each listed repositories
+        for repository in repositories:
+            repo = github_obj.get_repo(repository)
 
-            # Fetch today's clone details by comparing with today date. 
+            #Collect the number of stars the repo contains
+            stars = repo.stargazers_count
+
+            #Collect the number of forks the repo contains
+            forks = repo.forks
+
+            #Collect the clone details and fetch today's clones by comparing with date.
             clone_value = repo.get_clones_traffic()
             clones = clone_value['clones']
             for clone in clones:
-                if today_date in str(clone.timestamp):
+                if str(date) in str(clone.timestamp):
                     clone_count = clone.count
                     unique_clone_count = clone.uniques
                     break
@@ -65,25 +78,17 @@ def store_github_stats(username,token):
                     clone_count = 0
                     unique_clone_count = 0
 
-            # Fetch today's view details by comparing with today date.
+            #Collect the view details and fetch today's views by comparing with date.
             visitors_value = repo.get_views_traffic()
             views = visitors_value['views']
             for view in views:
-                if today_date in str(view.timestamp):
+                if str(date) in str(view.timestamp):
                     view_count = view.count
                     unique_visitors = view.uniques
                     break
                 else: 
                     view_count = 0
                     unique_visitors = 0
-
-            # Fetch number of stars and forkes for the repo
-            stars = repo.stargazers_count
-            forks = repo.forks
-            
-    #Writing the latest Github Stats to the csv file which is in the lambda temp folder.
-    with open("mycsv.csv", 'a+', newline='') as f:
-        write = csv.writer(f,delimiter=',')
-        if f.tell() == 0:
-            write.writerow(['Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
-        write.writerow([datetime.datetime.today(), stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
+                    
+            #Writing the collected values to csv file
+            write.writerow([repository, date_time, stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
