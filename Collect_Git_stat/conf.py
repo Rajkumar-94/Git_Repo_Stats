@@ -1,9 +1,8 @@
 "Conf file Dynamic Values"
 
 # Variables for Git repo
-github_username = ""
 token=""
-repo_name = ""
+repositories = ["username/repository","username/repository"]
 
 # Variables to work with aws lambda
 lambda_temp_file = '/tmp/mycsv.csv' 
