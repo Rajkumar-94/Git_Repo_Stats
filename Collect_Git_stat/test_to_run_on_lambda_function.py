@@ -92,3 +92,14 @@ def store_github_stats(github_obj,repositories):
                     
             #Writing the collected values to csv file
             write.writerow([repository, date_time, stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
+
+            # Fetch number of stars and forkes for the repo
+            stars = repo.stargazers_count
+            forks = repo.forks
+            
+    #Writing the latest Github Stats to the csv file which is in the lambda temp folder.
+    with open("mycsv.csv", 'a+', newline='') as f:
+        write = csv.writer(f,delimiter=',')
+        if f.tell() == 0:
+            write.writerow(['Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
+        write.writerow([datetime.datetime.today(), stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
