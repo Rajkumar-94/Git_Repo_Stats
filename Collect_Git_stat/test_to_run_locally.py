@@ -1,5 +1,6 @@
 """
-This is a sample script which connects to GitHub account via PyGithub library using token and get details about repository.
+This is a sample script that connects to the GitHub account via PyGithub library using token and collect repository details such as number of stars, forks, clones, unique clones, view and unique visitors.
+The collected details are stored on csv file.
 """
 from github import Github
 import csv
@@ -8,15 +9,15 @@ import conf
 
 def store_github_stats(github_obj,repositories):
     date = datetime.date.today()
-    
+
     #Opening csv file to write the collected Github Stats.
     with open("mycsv.csv", 'a+', newline='') as f:
         write = csv.writer(f,delimiter=',')
-        
+ 
         #If header row is not available, write the header row.
         if f.tell() == 0:
             write.writerow(['Repository','Date', 'Starts', 'Forks', 'Today\'s Clones', 'Today\'s Unique Clones', 'Today\'s Views', 'Today\'s Unique Visitors', 'Fortnight Clones', 'Fortnight Unique Clones', 'Fortnight Views', 'Fortnight unique Views'])
-        
+
         #Loop for the each listed repositories
         for repository in repositories:
             repo = github_obj.get_repo(repository)
@@ -68,7 +69,7 @@ def store_github_stats(github_obj,repositories):
             # Fetch number of stars and forkes for the repo
             stars = repo.stargazers_count
             forks = repo.forks
-            
+
     #Writing the latest Github Stats to the csv file.
     with open("mycsv.csv", 'a+', newline='') as f:
         write = csv.writer(f,delimiter=',')

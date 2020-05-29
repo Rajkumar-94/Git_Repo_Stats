@@ -1,7 +1,7 @@
 # A python code to collect GitHub repository statistics.
 
 You can use this code to collect everyday Git stats for a GitHub repository. Since the Git traffic stats will be available for the last 14 days, you can use this to keep tack for every day's git stat details.
-This code uses PyGitHub library which is used to fetch the Git repo stats such as clone, visitors, stars, forks, and store it in CSV file.
+This code uses PyGitHub library which is used to fetch the Git repository stats such as clone, visitors, stars, forks, and store it in CSV file.
 Here we have 2 codes, one to run locally and another is to run in AWS lambda function. The reason we tried AWS lambda function is that we can trigger the lambda function to run every day at a specific time by using the AWS CloudWatch service. So every day at the specified time the required data can be collected and stored without human interventions.
 
 ------
@@ -20,9 +20,10 @@ d) Clone this repository
 
 d) pip install -r requirements.txt to install dependencies
 
-e) Log in to GitHub and generate Token to read Git Stats.
+e) Log in to GitHub and generate Token with repo permission checked to read Git Stats.
 
 f) Update the conf file, with your details.
+Note: To fetch public repository's details, make sure you have the collaborative access for that repository.
 
 d) Run test_to_run_locally.py code, a csv file with GitHub stats will be generated on the same path where the code is available.
 
