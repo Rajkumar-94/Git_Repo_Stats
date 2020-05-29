@@ -66,10 +66,6 @@ def store_github_stats(github_obj,repositories):
             #Writing the collected values to csv file
             write.writerow([repository, datetime.datetime.today(), stars, forks, clone_count, unique_clone_count, view_count, unique_visitors, clone_value['count'], clone_value['uniques'], visitors_value['count'], visitors_value['uniques']])
 
-            # Fetch number of stars and forkes for the repo
-            stars = repo.stargazers_count
-            forks = repo.forks
-
 #----START OF SCRIPT---
 if __name__ == "__main__":
     github_obj = Github(conf.token)
