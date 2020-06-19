@@ -25,7 +25,7 @@ e) Log in to GitHub and generate Token with repo permission checked to read G
 f) Update the conf file, with your details.
 Note: To fetch public repository's details, make sure you have the collaborative access for that repository.
 
-d) Run test_to_run_locally.py code, a csv file with GitHub stats will be generated on the same path where the code is available.
+d) Run test_to_collect_Git_repo_stats.py code, a csv file with GitHub stats will be generated on the same path where the code is available.
 
 Setup to run the code in AWS lambda function:
 ------
@@ -47,7 +47,7 @@ a) Create an AWS Lambda function that uses Python language.
 b) In Lambda function we won't be able to install any python libraries, so install the required libraries like PyGitHub, pytz in local folder by using 
     pip install <package> -t <directory>
 
-c) Copy the conf.py and test_to_run_on_lambda_function.py files to the same directory as above.
+c) Copy the conf.py and test_to_run_on_aws_lambda_function.py files to the same directory as above.
 
 d) Select all the file and zip it.
 

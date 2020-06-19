@@ -1,60 +1,17 @@
 """
 This is a sample script that connects to the GitHub account via PyGithub library using token and collect repository details such as number of stars, forks, clones, unique clones, view and unique visitors.
+The methods are written on repo_stats.py file and called via the test file
 The collected details are stored on csv file.
 """
 from github import Github
+from repo_stats import *
 import csv
 import datetime
 import conf
 
-def get_repo_stars(github_obj,repository):
-    "Return the number of stars the repo contains"
-    repo = github_obj.get_repo(repository)
-    stars = repo.stargazers_count
-
-    return stars
-
-def get_repo_forks(github_obj,repository):
-    "Return the number of forks the repo contains"
-    repo = github_obj.get_repo(repository)
-    forks = repo.forks_count
-
-    return forks 
-
-def get_repo_clone(github_obj,repository):
-    "Return the number of clones and unique clones the repo contains"
-    repo = github_obj.get_repo(repository)
-    clone_dict = repo.get_clones_traffic()
-    clones = clone_dict['clones']
-    for clone in clones:
-        if str(date) in str(clone.timestamp):
-            clone_count = clone.count
-            unique_clone_count = clone.uniques
-            break
-        else: 
-            clone_count = 0
-            unique_clone_count = 0
-
-    return clone_dict,clone_count,unique_clone_count
-
-def get_repo_views(github_obj,repository):
-    "Return the number of visitors and unique views the repo contains"
-    repo = github_obj.get_repo(repository)
-    visitors_dict = repo.get_views_traffic()
-    views = visitors_dict['views']
-    for view in views:
-        if str(date) in str(view.timestamp):
-            view_count = view.count
-            unique_visitors = view.uniques
-            break
-        else: 
-            view_count = 0
-            unique_visitors = 0
-    return visitors_dict,view_count,unique_visitors
-
 #----START OF SCRIPT---
 if __name__ == "__main__":
-    date = datetime.date.today()
+    today_date = datetime.date.today()
     github_obj = Github(conf.token)
     repositories = conf.repositories
 
@@ -68,8 +25,8 @@ if __name__ == "__main__":
         for repository in repositories:
             stars = get_repo_stars(github_obj,repository)
             forks = get_repo_forks(github_obj,repository)
-            clone_dict,clone_count,unique_clone_count = get_repo_clone(github_obj,repository)
-            visitors_dict,view_count,unique_visitors = get_repo_views(github_obj,repository)
+            clone_dict,clone_count,unique_clone_count = get_repo_clone(github_obj,repository,today_date)
+            visitors_dict,view_count,unique_visitors = get_repo_views(github_obj,repository,today_date)
 
             print('{} has {} stars'.format(repository, stars))
             print('{} has {} forks'.format(repository, forks))
