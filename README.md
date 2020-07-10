@@ -22,10 +22,10 @@ d) pip install -r requirements.txt to install dependencies
 
 e) Log in to GitHub and generate Token with repo permission checked to read Git Stats.
 
-f) Update the conf file, with your details.
+f) Update the git_stat_conf.py under conf directory, with the required details.
 Note: To fetch public repository's details, make sure you have the collaborative access for that repository.
 
-d) Run test_to_collect_Git_repo_stats.py code, a csv file with GitHub stats will be generated on the same path where the code is available.
+d) collect_Git_repo_stats.py code, a csv file with GitHub stats will be generated on the same path where the code is available.
 
 Setup to run the code in AWS lambda function:
 ------
@@ -40,23 +40,23 @@ iv) Access to create IAM Role creation
 
 b) Create a new bucket in AWS S3 where you would like to store the collected csv file. Record the path for the bucket.
 
-__2. Setup for AWS Lambda function__ 
+__2. Setup for AWS Lambda function__
 
 a) Create an AWS Lambda function that uses Python language.
 
-b) In Lambda function we won't be able to install any python libraries, so install the required libraries like PyGitHub, pytz in local folder by using 
+b) In Lambda function we won't be able to install any python libraries, so install the required libraries like PyGitHub, pytz in local folder by using
     pip install <package> -t <directory>
 
-c) Copy the conf.py and test_to_run_on_aws_lambda_function.py files to the same directory as above.
+c) Copy the conf, github_module_methods folders and collect_git_repo_stats_via_lambda.py file which is under test_to_run_on_lambda_funtion to the same directory as above.
 
 d) Select all the file and zip it.
 
-e) In the Lambda function, in Code entry type, choose "Upload a .zip file" to upload your zip folder which consists of code and required libraries to Lambda function. Make sure Handler name is provided correctly. The test file should populate on the Lambda function window.
+e) In the Lambda function, in Code entry type, choose "Upload a .zip file" to upload your zip folder which consists of code and required python dependencies to Lambda function. Make sure Handler name is provided correctly. The test file should populate on the Lambda function window.
 
 f) Update the conf file with the details.
 
 g) Save the file which makes that the Lambda function is ready. Test the file and make sure the test runs without any error. If there is no error, the lambda function should create a csv file in the given S3 bucket and the collected data should be present on the csv file.
 
-__3. Setup for AWS CloudWatch Events__ 
+__3. Setup for AWS CloudWatch Events__
 
 a) On top of the AWS Lambda function, there is a option to attach trigger. Select AWS CloudWatch Events with required rules. We can declare when the test should run by using rate/cron. Once the trigger is set to the Lambda function, based on the given condition the Lambda function gets executed. I chose to run the function everyday 11:59 pm Indian time so that the function collects everyday's data at the end of the day.
