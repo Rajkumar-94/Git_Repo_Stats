@@ -1,0 +1,5 @@
+#Add files you want to ignore
+*csv*
+.cache/
+__pycache__
+*venv*
