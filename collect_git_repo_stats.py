@@ -8,7 +8,7 @@ from github_module_methods.repo_stats import Repo_Stat
 import conf.git_stat_conf as conf
 
 
-def collect_repo_stat(test_obj):
+def collect_repo_stat(git_obj):
     "Run the test"
     today_date = datetime.date.today()
     repositories = conf.repositories
@@ -22,10 +22,10 @@ def collect_repo_stat(test_obj):
 
         #For each listed repository collect the repo stats, store in the csv file and print the results as well.
         for repository in repositories:
-            stars = test_obj.get_repo_stars(repository)
-            forks = test_obj.get_repo_forks(repository)
-            clone_dict, clone_count, unique_clone_count = test_obj.get_repo_clone(repository, today_date)
-            visitors_dict, view_count, unique_visitors = test_obj.get_repo_views(repository, today_date)
+            stars = git_obj.get_repo_stars(repository)
+            forks = git_obj.get_repo_forks(repository)
+            clone_dict, clone_count, unique_clone_count = git_obj.get_repo_clone(repository, today_date)
+            visitors_dict, view_count, unique_visitors = git_obj.get_repo_views(repository, today_date)
 
             #Print the repo stats
             print('{} has {} stars'.format(repository, stars))
@@ -45,5 +45,5 @@ def collect_repo_stat(test_obj):
 #----START OF SCRIPT----
 if __name__ == "__main__":
     #Creating an instance of the class
-    test_obj = Repo_Stat(conf.token)
-    collect_repo_stat(test_obj)
+    git_obj = Repo_Stat(conf.token)
+    collect_repo_stat(git_obj)
